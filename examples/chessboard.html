@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
+    <style> body {padding: 0; margin: 0;} </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.1/math.js"></script>
+    <script src="../library/p5.projection.js"></script>
+  </head>
+  <body>
+<script>
+// default to a full HD sized canvas
+let inPts = [
+	[   0,    0],
+	[   0, 1080],
+	[1920,    0],
+	[1920, 1080],
+];
+
+let outPts; // to be determined by clicking on the screen
+
+let mat;
+let invmat;
+let font;
+
+function preload()
+{
+	font = loadFont("../assets/Inconsolata-Regular.ttf");
+}
+
+function setup()
+{
+	frameRate(25);
+	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
+	background(255);
+
+	// some skewed points to demonstrate the initial projection
+	// WebGL canvas (0,0) is at the center of the screen
+	outPts = [
+		[  200 - width/2, 100 - height/2],
+		[  210 - width/2, 800 - height/2],
+		[ 1000 - width/2, 150 - height/2],
+		[ 1100 - width/2, 750 - height/2],
+	];
+
+	// compute the initial projection and its inverse
+	mat = projectionMatrix(inPts, outPts);
+	invmat = projectionMatrix(outPts, inPts);
+}
+
+function draw()
+{
+	background(0);
+
+	// draw the mouseX/mouseY coordinates *before* applying the matrix
+	const px = mouseX - width/2;
+	const py = mouseY - height/2;
+	noStroke();
+	fill(100);
+	textFont(font, 40);
+	text(int(px) + "," + int(py), px, py+30);
+
+	// apply the translation matrix
+	projectionMatrixApply(mat);
+
+	// draw the screen outline
+	strokeWeight(2);
+	stroke(255,0,0);
+	noFill();
+	rect(0,0, 1920, 1080);
+
+	// draw some text to show that it is also affected by the rendering
+	textFont(font, 200);
+	noStroke();
+	fill(80);
+	text("Projection test", 100, 200);
+
+	// draw a checkerboard pattern centered on the screen
+	push();
+	translate((1920 - 800)/2 - 200, (1080 - 800)/2 + 100);
+
+	stroke(100);
+	noFill();
+	rect(0, 0, 800, 800);
+
+	noStroke();
+	fill(255);
+	for(let y=0 ; y < 8 ; y++)
+		for(let x = (y&1) ; x < 8 ; x+=2)
+			rect(x*100, y*100, 100, 100);
+	pop();
+
+	noFill();
+	strokeWeight(2);
+	stroke(255,255,0);
+	for(let r = 10 ; r < 500 ; r += 50)
+		circle(1600, 1080/2 + 100, r);
+	
+	// draw a cross hairs for the mouse, computing the uv coordinates
+	// from the mouse coordinates using the inverse matrix
+	const uv = projectionMatrixProject(invmat, px, py);
+
+	strokeWeight(2);
+	stroke(0,255,0);
+	line(-1000, uv[1], 2920, uv[1]);
+	stroke(0,0,255);
+	line(uv[0], -1000, uv[0], 2080);
+
+	noStroke();
+	fill(200);
+	textFont(font, 50);
+	text(int(uv[0]) + "," + int(uv[1]), uv[0], uv[1] - 30);
+}
+
+
+function mouseClicked(event)
+{
+	// in webgl mode (0,0) is the *center* of the screen
+	const x = mouseX - width/2;
+	const y = mouseY - height/2;
+	const corner =
+		x < 0 && y < 0 ? 0 :
+		x < 0 && y > 0 ? 1 :
+		x > 0 && y < 0 ? 2 :
+		x > 0 && y > 0 ? 3 :
+		0;
+
+	// the outPts are the corner in screen coordinates
+	outPts[corner][0] = int(x);
+	outPts[corner][1] = int(y);
+
+	// compute the forward and inverse projection matrices
+	mat = projectionMatrix(inPts, outPts);
+	invmat = projectionMatrix(outPts, inPts);
+	//console.log("corner", n, "x=", x, "y=", y, "mat=", mat);
+}
+
+
+</script>
+  </body>
+</html>
