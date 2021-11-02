@@ -1,5 +1,3 @@
-![Rear-projected on glass doors](images/demo.jpg)
-
 # Easy projection mapping for p5js
 
 This library makes it easy to map the sketch onto a projected
@@ -17,11 +15,17 @@ Inspired by [OpenCV `perspectiveTransform()`](https://docs.opencv.org/3.4/d2/de8
 
 ## Examples
 
-![images/chessboard.png]
+![Chessboard skewed by the perspective transform](images/chessboard.png)
 
 [Chessboard example](examples/chessboard.html) shows how to translate screen coordinates into canvas coordinates
 and back, as well as demonstrates line drawing and fonts in the projection mapping mode.
 
+![Rear-projected on glass doors](images/demo.jpg)
+[Mondrian art](https://github.com/osresearch/mondriaan]) rear-projected on glass doors.
+
+![Eyeballs and scary trees](images/eyeballs.jpg)
+
+Halloween trees and eyeballs, on the same glass doors.
 
 
 ## The math parts
