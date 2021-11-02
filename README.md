@@ -15,6 +15,14 @@ of the projected image and map those to the canvas coordinates
 
 Inspired by [OpenCV `perspectiveTransform()`](https://docs.opencv.org/3.4/d2/de8/group__core__array.html#gad327659ac03e5fd6894b90025e6900a7)
 
+## Examples
+
+![images/chessboard.png]
+
+[Chessboard example](examples/chessboard.html) shows how to translate screen coordinates into canvas coordinates
+and back, as well as demonstrates line drawing and fonts in the projection mapping mode.
+
+
 
 ## The math parts
 
