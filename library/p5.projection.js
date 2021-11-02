@@ -60,3 +60,12 @@ function projectionMatrixApply(mat)
 		0,      0,      1, 0,
 		mat[2], mat[5], 0, mat[8]);
 }
+
+function projectionMatrixProject(mat, x, y)
+{
+	const u = mat[0]*x + mat[1]*y + mat[2];
+	const v = mat[3]*x + mat[4]*y + mat[5];
+	const z = mat[6]*x + mat[7]*y + mat[8];
+
+	return [ u/z, v/z ];
+}
