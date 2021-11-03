@@ -62,7 +62,8 @@ function draw()
 and back, as well as demonstrates line drawing and fonts in the projection mapping mode.
 
 ![Rear-projected on glass doors](images/demo.jpg)
-[Mondrian art](https://github.com/osresearch/mondriaan]) rear-projected on glass doors.
+[Mondrian art](https://github.com/osresearch/mondriaan) rear-projected on glass doors.
+This was the art installation that started this project.
 
 ![Eyeballs and scary trees](images/eyeballs.jpg)
 
