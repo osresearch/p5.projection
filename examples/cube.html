@@ -24,6 +24,7 @@ let square = [[0,0], [0,800], [800,0], [800,800]];
 let mat0 = new ProjectionMatrix([[0,-400], [-200,-200], [+200,-200], [0,0]], square);
 let mat1 = new ProjectionMatrix([[-200,-200], [-200,400], [0,0], [0,500]], square);
 let mat2 = new ProjectionMatrix([[0,0], [0,500], [+200,-200], [+200,+400]], square);
+let angle = 0;
 
 function preload()
 {
@@ -41,12 +42,13 @@ function draw_checkerboard()
 {
 	// draw some text to show that it is also affected by the rendering
 	push()
-	textFont(font, 120);
+	textFont(font, 110);
 	noStroke();
 	fill(255,0,0);
-	rotate(45 * PI/180);
-	translate(0,0,10);
-	text("Projection test", 100, 50);
+	translate(400,400,10);
+	rotate(angle);
+	textAlign(CENTER, CENTER);
+	text("p5.projection\ncube example", 0, 0);
 	pop();
 
 	// draw a checkerboard pattern that fills the 800x800
@@ -57,16 +59,28 @@ function draw_checkerboard()
 	rect(0, 0, 800, 800);
 
 	noStroke();
-	fill(255);
 	for(let y=0 ; y < 8 ; y++)
-		for(let x = (y&1) ; x < 8 ; x+=2)
+	{
+		for(let x = 0 ; x < 8 ; x+=1)
+		{
+			fill((x ^ y) & 1 ? 255 : 0);
 			rect(x*100, y*100, 100, 100);
+		}
+	}
+
 	pop();
 }
 
 function draw()
 {
 	background(0);
+
+	// draw some helpful text *before* enabling the matrix
+	textFont(font, 40);
+	noStroke();
+	fill(0,0,255);
+	text("Press e to toggle Edit mode", -width/2 + 10, -height/2 + 50);
+	text("then click on corners to drag", -width/2 + 10, -height/2 + 100);
 
 	// apply the translation matrix with debug turned on
 	push();
@@ -84,11 +98,12 @@ function draw()
 	draw_checkerboard();
 	pop();
 
+	angle += 0.01;
 }
 
 function keyPressed()
 {
-	if (key == ' ')
+	if (key == 'e')
 	{
 		mat0.edit ^= 1;
 		mat1.edit ^= 1;
