@@ -61,6 +61,12 @@ function draw()
 [Chessboard example](examples/chessboard.html) shows how to translate screen coordinates into canvas coordinates
 and back, as well as demonstrates line drawing and fonts in the projection mapping mode.
 
+![Checkerboard cube](images/cube.png)
+
+[Multiple projected surfaces on a cube](examples/cube.html) shows how multiple
+`ProjectionMatrix` objects can be created to allow mapping to multiple real world
+surfaces, such as onto the three visible faces of a cube.
+
 ![Rear-projected on glass doors](images/demo.jpg)
 [Mondrian art](https://github.com/osresearch/mondriaan) rear-projected on glass doors.
 This was the art installation that started this project.

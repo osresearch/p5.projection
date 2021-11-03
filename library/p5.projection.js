@@ -159,7 +159,7 @@ mouseDragged(n)
 	this.outPts[n][1] = mouseY - height/2;
 
 	// compute the forward and inverse projection matrices
-	mat.update();
+	this.update();
 }
 
 
