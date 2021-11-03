@@ -4,7 +4,44 @@
  * Inspired by OpenCV perspectiveTransform()
  * https://docs.opencv.org/3.4/d2/de8/group__core__array.html#gad327659ac03e5fd6894b90025e6900a7
  */
-function projectionMatrix(inPts, outPts)
+class ProjectionMatrix
+{
+constructor(outPts=null, inPts=null)
+{
+	// default is a full HD canvas
+	this.inPts = inPts ? inPts : [
+		[   0,    0],
+		[   0, 1080],
+		[1920,    0],
+		[1920, 1080],
+	];
+
+	// default is a slightly skewed rectangle
+	this.outPts = outPts ? outPts : [
+		[ -700, -400 ],
+		[ -650, +300 ],
+		[ 600, -150 ],
+		[ 500, +450 ],
+	];
+
+	// pre-compute the forward and reverse projection matrices
+	this.update();
+}
+
+
+/*
+ * After updating inPts or outPts, update() must be called
+ * to recompute the inverse and forward projection matrices.
+ * This is potentially expensive, so it should only be called
+ * when necessary.
+ */
+update()
+{
+	this.mat = this.projectionMatrix(this.inPts, this.outPts);
+	this.invmat = this.projectionMatrix(this.outPts, this.inPts);
+}
+
+projectionMatrix(inPts, outPts)
 {
 	const x0 = inPts[0][0];
 	const x1 = inPts[1][0];
@@ -52,20 +89,61 @@ function projectionMatrix(inPts, outPts)
  * vi = c10*xi + c11*yi + c12
  * zi = c20*xi + c21*yi + c22
  */
-function projectionMatrixApply(mat)
+apply(debug=false)
 {
+	const mat = this.mat;
+
 	applyMatrix(
 		mat[0], mat[3], 0, mat[6],
 		mat[1], mat[4], 0, mat[7],
 		0,      0,      1, 0,
 		mat[2], mat[5], 0, mat[8]);
+
+	if (debug >= 1)
+	{
+		// draw the border in a thick line
+		push();
+		strokeWeight(10);
+		stroke(0,255,0);
+		noFill();
+		beginShape();
+		vertex(this.inPts[0][0], this.inPts[0][1]);
+		vertex(this.inPts[1][0], this.inPts[1][1]);
+		vertex(this.inPts[3][0], this.inPts[3][1]);
+		vertex(this.inPts[2][0], this.inPts[2][1]);
+		vertex(this.inPts[0][0], this.inPts[0][1]);
+		endShape();
+		pop();
+	}
+
+	if (debug >= 2)
+	{
+		// draw the mouse cross hairs in red and blue
+		push();
+		strokeWeight(1);
+		stroke(0,0,255);
+		noFill();
+		const uv = this.project(mouseX - width/2, mouseY - height/2);
+		line(-500, uv[1], 1920 + 500, uv[1]);
+		stroke(255,0,0);
+		line(uv[0], -500, uv[0], 1080 + 500);
+		pop();
+	}
+
 }
 
-function projectionMatrixProject(mat, x, y)
+/*
+ * convert screen coordinates to canvas coordinates
+ * Remember that mouseX and mouseY are from the upper-left,
+ * but the canvas is centered on the screen.
+ */
+project(x, y)
 {
+	const mat = this.invmat;
 	const u = mat[0]*x + mat[1]*y + mat[2];
 	const v = mat[3]*x + mat[4]*y + mat[5];
 	const z = mat[6]*x + mat[7]*y + mat[8];
 
 	return [ u/z, v/z ];
+}
 }
