@@ -44,12 +44,16 @@ save()
 	storeItem(this.name, this.outPts);
 }
 
+/*
+ * If a name is given, try to restore this one from a local storage.
+ * This must be called in setup(), not before, since p5 hasn't initialized
+ * everything yet.
+ */
 load()
 {
 	if (this.name == null)
 		return;
 
-	// try to restore this one from a local storage
 	const stored = getItem(this.name);
 	if (stored == null)
 		return;
@@ -118,8 +122,6 @@ projectionMatrix(inPts, outPts)
 
 drawCorner(n)
 {
-	push();
-
 	let r = 20;
 	fill(0,255,0);
 
@@ -131,8 +133,6 @@ drawCorner(n)
 	}
 
 	rect(this.inPts[n][0]-r/2, this.inPts[n][1]-r/2, r, r);
-
-	pop();
 }
 
 drawBorder()
@@ -150,14 +150,16 @@ drawBorder()
 	vertex(this.inPts[2][0], this.inPts[2][1]);
 	vertex(this.inPts[0][0], this.inPts[0][1]);
 	endShape();
-	pop();
 
 	// draw the corners slightly larger and highlighted if the mouse
-	// is over them.  record if we have a hit for the mouse drag event
+	// is over them.
+	noStroke();
 	this.drawCorner(0);
 	this.drawCorner(1);
 	this.drawCorner(2);
 	this.drawCorner(3);
+
+	pop();
 }
 
 drawMouse()

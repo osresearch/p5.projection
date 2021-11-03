@@ -25,7 +25,7 @@ to update the `mat.outPts` array with the correct corners.
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.1/math.js"></script>
-    <script src="https://osresearch.github.io/p5.projection/library/p5.projection.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/osresearch/p5.projection@0.2.1/library/p5.projection.js"></script>
   </head>
   <body>
 <script>
@@ -34,20 +34,23 @@ let mat = new ProjectionMatrix();
 function setup()
 {
 	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
+	mat.edit = true;
 }
 
 function draw()
 {
 	background(0);
 
-	// apply the translation matrix with debug turned on
-	mat.apply(2);
+	mat.apply();
 
-	// draw a rectangle
 	fill(80);
 	stroke(150);
-	strokeWeight(20);
-	rect(200, 100, 500, 200);
+	strokeWeight(2);
+	rect(400, 200, 200, 200);
+	rect(600, 200, 200, 200);
+	rect(800, 200, 200, 200);
+	rect(800, 400, 200, 200);
+	rect(600, 600, 200, 200);
 }
 </script>
 </body>
@@ -77,6 +80,9 @@ Halloween trees and eyeballs, on the same glass doors.
 
 
 ## The math parts
+
+You don't need to understand this part to use the library, although
+you might find it interesting to see how it works under the covers.
 
 ![Behind the scenes pre-alignment](images/alignment.jpg)
 
