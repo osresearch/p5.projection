@@ -62,25 +62,10 @@ function draw()
 }
 
 
-function mouseClicked(event)
+function mouseDragged()
 {
-	// in webgl mode (0,0) is the *center* of the screen
-	const x = mouseX - width/2;
-	const y = mouseY - height/2;
-	const corner =
-		x < 0 && y < 0 ? 0 :
-		x < 0 && y > 0 ? 1 :
-		x > 0 && y < 0 ? 2 :
-		x > 0 && y > 0 ? 3 :
-		0;
-
-	// the outPts are the corner in screen coordinates
-	mat.outPts[corner][0] = int(x);
-	mat.outPts[corner][1] = int(y);
-
-	// compute the forward and inverse projection matrices
-	mat.update();
-	//console.log("corner", n, "x=", x, "y=", y, "mat=", mat);
+	if (mat.hit >= 0)
+		mat.mouseDragged(mat.hit);
 }
 
 

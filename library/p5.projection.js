@@ -83,6 +83,86 @@ projectionMatrix(inPts, outPts)
 	return m;
 }
 
+
+drawCorner(n)
+{
+	push();
+
+	const muv = this.project(mouseX - width/2, mouseY - height/2);
+	const mx = muv[0];
+	const my = muv[1];
+	const px = this.inPts[n][0];
+	const py = this.inPts[n][1];
+
+	let w = 20;
+
+	const hit = px - w/2 <= mx && mx <= px + w/2 && py - w/2 <= my && my <= py + w/2;
+
+	fill(0,255,0);
+
+	if (hit)
+	{
+		translate(0,0,1)
+		fill(255,0,0);
+		w *= 2;
+		this.hit = n;
+	}
+
+	rect(this.inPts[n][0]-w/2, this.inPts[n][1]-w/2, w, w);
+
+	pop();
+}
+
+drawBorder()
+{
+	push();
+
+	// draw the border in a thick line
+	strokeWeight(5);
+	stroke(0,255,0);
+	noFill();
+	beginShape();
+	vertex(this.inPts[0][0], this.inPts[0][1]);
+	vertex(this.inPts[1][0], this.inPts[1][1]);
+	vertex(this.inPts[3][0], this.inPts[3][1]);
+	vertex(this.inPts[2][0], this.inPts[2][1]);
+	vertex(this.inPts[0][0], this.inPts[0][1]);
+	endShape();
+	pop();
+
+	// draw the corners slightly larger and highlighted if the mouse
+	// is over them.  record if we have a hit for the mouse drag event
+	this.hit = -1;
+	this.drawCorner(0);
+	this.drawCorner(1);
+	this.drawCorner(2);
+	this.drawCorner(3);
+}
+
+drawMouse()
+{
+	// draw the mouse cross hairs in red and blue
+	push();
+	strokeWeight(1);
+	stroke(0,0,255);
+	noFill();
+	const uv = this.project(mouseX - width/2, mouseY - height/2);
+	line(-500, uv[1], 1920 + 500, uv[1]);
+	stroke(255,0,0);
+	line(uv[0], -500, uv[0], 1080 + 500);
+	pop();
+}
+
+mouseDragged(n)
+{
+	this.outPts[n][0] = mouseX - width/2;
+	this.outPts[n][1] = mouseY - height/2;
+
+	// compute the forward and inverse projection matrices
+	mat.update();
+}
+
+
 /*
  * matrix is c00, c01, c02, c10, c11, c12, c20, c21, c22
  * ui = c00*xi + c01*yi + c02
@@ -99,37 +179,16 @@ apply(debug=false)
 		0,      0,      1, 0,
 		mat[2], mat[5], 0, mat[8]);
 
+
+	this.hit = -1;
+
 	if (debug >= 1)
-	{
-		// draw the border in a thick line
-		push();
-		strokeWeight(10);
-		stroke(0,255,0);
-		noFill();
-		beginShape();
-		vertex(this.inPts[0][0], this.inPts[0][1]);
-		vertex(this.inPts[1][0], this.inPts[1][1]);
-		vertex(this.inPts[3][0], this.inPts[3][1]);
-		vertex(this.inPts[2][0], this.inPts[2][1]);
-		vertex(this.inPts[0][0], this.inPts[0][1]);
-		endShape();
-		pop();
-	}
+		this.drawBorder();
 
 	if (debug >= 2)
-	{
-		// draw the mouse cross hairs in red and blue
-		push();
-		strokeWeight(1);
-		stroke(0,0,255);
-		noFill();
-		const uv = this.project(mouseX - width/2, mouseY - height/2);
-		line(-500, uv[1], 1920 + 500, uv[1]);
-		stroke(255,0,0);
-		line(uv[0], -500, uv[0], 1080 + 500);
-		pop();
-	}
+		this.drawMouse();
 
+	return this.hit;
 }
 
 /*
