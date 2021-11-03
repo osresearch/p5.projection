@@ -25,7 +25,7 @@ to update the `mat.outPts` array with the correct corners.
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.1/math.js"></script>
-    <script src="https://github.com/library/p5.projection.js"></script>
+    <script src="https://osresearch.github.io/p5.projection/library/p5.projection.js"></script>
   </head>
   <body>
 <script>
