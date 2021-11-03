@@ -78,6 +78,11 @@ This was the art installation that started this project.
 
 Halloween trees and eyeballs, on the same glass doors.
 
+![Forest of creepy trees](images/trees.png)
+
+[Just the fractal trees](examples/trees.html), which slowly wave in a creepy way, blown
+by the GPU fan that spins up to draw all those line segments.
+
 
 ## The math parts
 
