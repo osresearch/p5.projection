@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.1/math.js"></script>
+    <script src="../library/p5.projection.js"></script>
+  </head>
+  <body>
+<script>
+let mat = new ProjectionMatrix();
+
+function setup()
+{
+	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
+}
+
+function draw()
+{
+	background(0);
+
+	// apply the translation matrix with debug turned on
+	mat.apply(2);
+
+	// draw a rectangle
+	fill(80);
+	stroke(150);
+	strokeWeight(20);
+	rect(200, 100, 500, 200);
+}
+</script>
+</body>
+</html>

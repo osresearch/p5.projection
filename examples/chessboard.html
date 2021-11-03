@@ -18,7 +18,7 @@
   <body>
 <script>
 let font;
-let mat;
+let mat = new ProjectionMatrix();
 
 function preload()
 {
@@ -30,7 +30,6 @@ function setup()
 	frameRate(25);
 	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
 	background(255);
- 	mat = new ProjectionMatrix();
 }
 
 function draw()

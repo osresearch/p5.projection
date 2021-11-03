@@ -1,17 +1,58 @@
 # Easy projection mapping for p5js
 
-This library makes it easy to map the sketch onto a projected
-surface to correct for mis-alignment or moving surfaces.
-It requires four "uv" coordinates and four "xy" coordinates
-to create the sixteen values for `applyMatrix()` that will make
-the projected image line up with the real world.
+This library makes it easy to map a p5js sketch onto a projected
+surface to correct for 3D shapes, projector mis-alignment or
+even moving surfaces.  It requires four `uv` coordinates and four
+`xy` coordinates to create the sixteen values for `applyMatrix()`
+that will make the projected image line up with the real world.
 
 For many applications it is enough to click on the four corners
 of the projected image and map those to the canvas coordinates
 (0,0), (1920,0), (1920,1080) and (0,1080), then call into the
-`computeMatrix()` function.
+`update()` function to compute the forward and inverse matrices.
 
 Inspired by [OpenCV `perspectiveTransform()`](https://docs.opencv.org/3.4/d2/de8/group__core__array.html#gad327659ac03e5fd6894b90025e6900a7)
+
+## Getting started
+
+Include `math.js` and `p5.projection.js` in your code and create `ProjectionMatrix` object.
+In your `setup()` function create a `WEBGL` canvas and in your `draw()` function,
+call `mat.apply()` to skew the drawing to the projected frame.  You can add a `mouseClicked()`
+to update the `mat.outPts` array with the correct corners.
+
+```
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.1/math.js"></script>
+    <script src="https://github.com/library/p5.projection.js"></script>
+  </head>
+  <body>
+<script>
+let mat = new ProjectionMatrix();
+
+function setup()
+{
+	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
+}
+
+function draw()
+{
+	background(0);
+
+	// apply the translation matrix with debug turned on
+	mat.apply(2);
+
+	// draw a rectangle
+	fill(80);
+	stroke(150);
+	strokeWeight(20);
+	rect(200, 100, 500, 200);
+}
+</script>
+</body>
+</html>
+```
 
 ## Examples
 
@@ -113,8 +154,8 @@ or using [math.js](https://mathjs.org/) function [`lusolve()`](https://mathjs.or
 ## The WebGL parts
 
 The [p5 `applyMatrix()`](https://p5js.org/reference/#/p5/applyMatrix)
-takes either 6 elements, in which csae only affine transforms are supported,
-or 16 elements, which allows arbitrary projections.
+takes either 6 elements, in which case only affine transforms are supported,
+or 16 elements, which allows arbitrary XYZ to UVW projections.
 
 Since the 2D values have `z=0`, the equation that the matrix should apply is:
 
