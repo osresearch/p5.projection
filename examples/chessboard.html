@@ -30,6 +30,7 @@ function setup()
 	frameRate(25);
 	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
 	background(255);
+	mat.edit = true;
 }
 
 function draw()
@@ -61,12 +62,6 @@ function draw()
 	pop();
 }
 
-
-function mouseDragged()
-{
-	if (mat.hit >= 0)
-		mat.mouseDragged(mat.hit);
-}
 
 
 </script>

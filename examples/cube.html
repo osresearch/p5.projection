@@ -86,17 +86,15 @@ function draw()
 
 }
 
-
-function mouseDragged()
+function keyPressed()
 {
-	if (mat0.hit >= 0)
-		mat0.mouseDragged(mat0.hit);
-	if (mat1.hit >= 0)
-		mat1.mouseDragged(mat1.hit);
-	if (mat2.hit >= 0)
-		mat2.mouseDragged(mat2.hit);
+	if (key == ' ')
+	{
+		mat0.edit ^= 1;
+		mat1.edit ^= 1;
+		mat2.edit ^= 1;
+	}
 }
-
 
 </script>
   </body>

@@ -24,6 +24,13 @@ constructor(outPts=null, inPts=null)
 		[ 500, +450 ],
 	];
 
+	// no corner is currently moused and not dragging
+	this.hit = -1;
+	this.dragging = false;
+
+	// do not start in edit mode
+	this.edit = false;
+
 	// pre-compute the forward and reverse projection matrices
 	this.update();
 }
@@ -88,27 +95,17 @@ drawCorner(n)
 {
 	push();
 
-	const muv = this.project(mouseX - width/2, mouseY - height/2);
-	const mx = muv[0];
-	const my = muv[1];
-	const px = this.inPts[n][0];
-	const py = this.inPts[n][1];
-
-	let w = 20;
-
-	const hit = px - w/2 <= mx && mx <= px + w/2 && py - w/2 <= my && my <= py + w/2;
-
+	let r = 20;
 	fill(0,255,0);
 
-	if (hit)
+	if (this.hit == n)
 	{
 		translate(0,0,1)
 		fill(255,0,0);
-		w *= 2;
-		this.hit = n;
+		r *= 2;
 	}
 
-	rect(this.inPts[n][0]-w/2, this.inPts[n][1]-w/2, w, w);
+	rect(this.inPts[n][0]-r/2, this.inPts[n][1]-r/2, r, r);
 
 	pop();
 }
@@ -132,7 +129,6 @@ drawBorder()
 
 	// draw the corners slightly larger and highlighted if the mouse
 	// is over them.  record if we have a hit for the mouse drag event
-	this.hit = -1;
 	this.drawCorner(0);
 	this.drawCorner(1);
 	this.drawCorner(2);
@@ -142,24 +138,63 @@ drawBorder()
 drawMouse()
 {
 	// draw the mouse cross hairs in red and blue
+	const uv = this.project(mouseX - width/2, mouseY - height/2);
+
 	push();
 	strokeWeight(1);
-	stroke(0,0,255);
 	noFill();
-	const uv = this.project(mouseX - width/2, mouseY - height/2);
+
+	stroke(0,0,255);
 	line(-500, uv[1], 1920 + 500, uv[1]);
+
 	stroke(255,0,0);
 	line(uv[0], -500, uv[0], 1080 + 500);
+
 	pop();
 }
 
-mouseDragged(n)
+mouseMoved()
 {
-	this.outPts[n][0] = mouseX - width/2;
-	this.outPts[n][1] = mouseY - height/2;
+	const mx = mouseX - width/2;
+	const my = mouseY - height/2;
 
-	// compute the forward and inverse projection matrices
-	this.update();
+	if (this.dragging)
+	{
+		if (!mouseIsPressed)
+		{
+			// end of drag
+			this.dragging = false;
+			return;
+		}
+
+		this.outPts[this.hit][0] = mx;
+		this.outPts[this.hit][1] = my;
+
+		// compute the forward and inverse projection matrices
+		this.update();
+		return;
+	} else {
+		// see if we hit any of our mouse
+		// update the currently hit corner
+		const r = 30;
+		const r2 = r * r;
+
+		this.hit = -1;
+
+		for(let n = 0 ; n < 4 ; n++)
+		{
+			const dx = (this.outPts[n][0] - mx);
+			const dy = (this.outPts[n][1] - my);
+			const d2 = dx*dx + dy*dy;
+
+			if (d2 < r2)
+				this.hit = n;
+		}
+
+		// if they have pressed the mouse, then select the point
+		if (mouseIsPressed && this.hit >= 0)
+			this.dragging = true;
+	}
 }
 
 
@@ -180,15 +215,17 @@ apply(debug=false)
 		mat[2], mat[5], 0, mat[8]);
 
 
-	this.hit = -1;
-
-	if (debug >= 1)
+	// if edit mode is enabled, handle mouse movement and border drawing
+	if (this.edit)
+	{
+		this.mouseMoved();
 		this.drawBorder();
+	}
 
 	if (debug >= 2)
 		this.drawMouse();
 
-	return this.hit;
+	// should check if mouse is inside the matrix
 }
 
 /*
