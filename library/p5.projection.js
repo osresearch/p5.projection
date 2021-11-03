@@ -6,7 +6,7 @@
  */
 class ProjectionMatrix
 {
-constructor(outPts=null, inPts=null)
+constructor(outPts=null, inPts=null, name=null)
 {
 	// default is a full HD canvas
 	this.inPts = inPts ? inPts : [
@@ -24,6 +24,8 @@ constructor(outPts=null, inPts=null)
 		[ 500, +450 ],
 	];
 
+	this.name = name;
+
 	// no corner is currently moused and not dragging
 	this.hit = -1;
 	this.dragging = false;
@@ -34,6 +36,29 @@ constructor(outPts=null, inPts=null)
 	// pre-compute the forward and reverse projection matrices
 	this.update();
 }
+
+save()
+{
+	if (this.name == null)
+		return;
+	storeItem(this.name, this.outPts);
+}
+
+load()
+{
+	if (this.name == null)
+		return;
+
+	// try to restore this one from a local storage
+	const stored = getItem(this.name);
+	if (stored == null)
+		return;
+
+	console.log("Loaded " + this.name, stored);
+	this.outPts = stored;
+	this.update();
+}
+
 
 
 /*

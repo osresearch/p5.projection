@@ -21,9 +21,13 @@ let font;
 
 // three faces for a cube 800x800 
 let square = [[0,0], [0,800], [800,0], [800,800]];
-let mat0 = new ProjectionMatrix([[0,-400], [-200,-200], [+200,-200], [0,0]], square);
-let mat1 = new ProjectionMatrix([[-200,-200], [-200,400], [0,0], [0,500]], square);
-let mat2 = new ProjectionMatrix([[0,0], [0,500], [+200,-200], [+200,+400]], square);
+let p0 = [[0,-400], [-200,-200], [+200,-200], [0,0]];
+let p1 = [[-200,-200], [-200,400], [0,0], [0,500]];
+let p2 = [[0,0], [0,500], [+200,-200], [+200,+400]];
+
+let mat0 = new ProjectionMatrix(p0, square, "cube-0");
+let mat1 = new ProjectionMatrix(p1, square, "cube-1");
+let mat2 = new ProjectionMatrix(p2, square, "cube-2");
 let angle = 0;
 
 function preload()
@@ -36,6 +40,10 @@ function setup()
 	frameRate(25);
 	createCanvas(windowWidth-10, windowHeight-10, WEBGL);
 	background(255);
+
+	mat0.load();
+	mat1.load();
+	mat2.load();
 }
 
 function draw_checkerboard()
@@ -80,7 +88,9 @@ function draw()
 	noStroke();
 	fill(0,0,255);
 	text("Press e to toggle Edit mode", -width/2 + 10, -height/2 + 50);
-	text("then click on corners to drag", -width/2 + 10, -height/2 + 100);
+	text("then click on corners to drag", -width/2 + 10, -height/2 + 90);
+	text("Press s to save positions", -width/2 + 10, -height/2 + 130);
+	text("Press r to reset positions", -width/2 + 10, -height/2 + 170);
 
 	// apply the translation matrix with debug turned on
 	push();
@@ -108,6 +118,18 @@ function keyPressed()
 		mat0.edit ^= 1;
 		mat1.edit ^= 1;
 		mat2.edit ^= 1;
+	}
+	if (key == 's')
+	{
+		mat0.save();
+		mat1.save();
+		mat2.save();
+	}
+	if (key == 'r')
+	{
+		mat0.outPts = p0; mat0.update();
+		mat1.outPts = p1; mat1.update();
+		mat2.outPts = p2; mat2.update();
 	}
 }
 
