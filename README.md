@@ -1,6 +1,6 @@
 # Easy projection mapping for p5js
 
-[`p5.processing.js`](https://github.com/osresearch/p5.projection) is a library
+[`p5.projection.js`](https://github.com/osresearch/p5.projection) is a library
 that hopes makes it easy to map a p5js sketch onto a projected
 surface to correct for 3D shapes, projector mis-alignment or
 even moving surfaces.  It requires four `uv` coordinates and four
