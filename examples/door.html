@@ -14,6 +14,7 @@ let rect_h = 336;
 
 let x_coords = [0, 204, 504, 708, 1047, 1249, 1550, 1752];
 let y_coords = [0, 372, 765];
+let t = 0;
 
 function setup()
 {
@@ -28,15 +29,19 @@ function draw()
 	mat.apply();
 
 	noStroke();
+	let c1 = color(256,0,0);
+	let c2 = color(0,0,256);
+
 	for(let x of x_coords)
 	{
 		for(let y of y_coords)
 		{
-			fill(256 * x / 1920, 0, 256 * y / 1080);
+			fill(lerpColor(c1, c2, noise(t,x,y)));
 			rect(x, y, rect_w, rect_h);
 		}
 	}
 
+	t += 0.002;
 }
 </script>
 </body>
